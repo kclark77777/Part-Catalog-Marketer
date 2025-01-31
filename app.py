@@ -8,8 +8,11 @@ from docx import Document
 # Load Excel file from GitHub
 def load_data():
     url = "https://raw.githubusercontent.com/kclark77777/Part-Catalog-Marketer/main/aircraft-parts.xlsx"
-    response = requests.get(url)
+    response = requests.get(url, stream=True)
     if response.status_code == 200:
+        content_type = response.headers.get("Content-Type", "")
+        if "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" not in content_type:
+            raise ValueError("Downloaded file is not an Excel file. Check the GitHub URL.")
         return pd.ExcelFile(BytesIO(response.content), engine="openpyxl")
     else:
         raise ValueError("Failed to load Excel file from GitHub.")
@@ -64,6 +67,9 @@ def main():
                 st.warning("Please select at least one aircraft model.")
     except Exception as e:
         st.error(f"Error loading data: {str(e)}")
+
+if __name__ == "__main__":
+    main()
 
 if __name__ == "__main__":
     main()
