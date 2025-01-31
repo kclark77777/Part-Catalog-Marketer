@@ -7,7 +7,8 @@ from docx import Document
 
 # Load Excel file from GitHub
 def load_data():
-    url = "https://github.com/kclark77777/Part-Catalog-Marketer/raw/refs/heads/main/aircraft_parts.xlsx"
+    url = "https://raw.githubusercontent.com/kclark77777/Part-Catalog-Marketer/main/aircraft_parts.xlsx"
+
     response = requests.get(url, stream=True)
     
     # Debugging: Print the response headers
