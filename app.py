@@ -2,9 +2,19 @@ import pandas as pd
 from docx import Document
 import streamlit as st
 
-# Load Excel file
-def load_data(file_path):
-    return pd.ExcelFile(file_path)
+import pandas as pd
+import requests
+from io import BytesIO
+
+# Load Excel file from GitHub
+def load_data():
+    url = "https://raw.githubusercontent.com/YOUR_GITHUB_USERNAME/YOUR_REPO/main/aircraft_parts.xlsx"
+    response = requests.get(url)
+    if response.status_code == 200:
+        return pd.ExcelFile(BytesIO(response.content), engine="openpyxl")
+    else:
+        raise ValueError("Failed to load Excel file from GitHub.")
+
 
 # Read relevant sheets
 def filter_data(excel_data, selected_aircraft):
