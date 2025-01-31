@@ -7,21 +7,17 @@ from docx import Document
 
 # Load Excel file from GitHub
 def load_data():
-    url = "https://github.com/kclark77777/Part-Catalog-Marketer/raw/refs/heads/main/aircraft-parts.xlsx"
-
+    url = "https://raw.githubusercontent.com/kclark77777/Part-Catalog-Marketer/main/aircraft-parts.xlsx"
     response = requests.get(url, stream=True)
     
-    # Debugging: Print the response headers
+    # Debugging: Print response headers
     print("Response Headers:", response.headers)
 
     if response.status_code == 200:
-        content_type = response.headers.get("Content-Type", "")
-        
-        # Ensure the file is actually an Excel file
-        if "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" not in content_type:
-            raise ValueError(f"Downloaded file is not a valid Excel file. Content-Type: {content_type}")
-
-        return pd.ExcelFile(BytesIO(response.content), engine="openpyxl")
+        try:
+            return pd.ExcelFile(BytesIO(response.content), engine="openpyxl")
+        except Exception as e:
+            raise ValueError(f"Failed to open Excel file. Possible corruption or incorrect format. Error: {str(e)}")
     else:
         raise ValueError(f"Failed to load Excel file from GitHub. Status Code: {response.status_code}")
 
