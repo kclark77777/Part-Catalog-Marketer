@@ -7,15 +7,22 @@ from docx import Document
 
 # Load Excel file from GitHub
 def load_data():
-    url = "https://github.com/kclark77777/Part-Catalog-Marketer/raw/refs/heads/main/aircraft_parts.xlsx"
+    url = "https://raw.githubusercontent.com/kclark77777/Part-Catalog-Marketer/main/aircraft-parts.xlsx"
     response = requests.get(url, stream=True)
+    
+    # Debugging: Print the response headers
+    print("Response Headers:", response.headers)
+
     if response.status_code == 200:
         content_type = response.headers.get("Content-Type", "")
+        
+        # Ensure the file is actually an Excel file
         if "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" not in content_type:
-            raise ValueError("Downloaded file is not an Excel file. Check the GitHub URL.")
+            raise ValueError(f"Downloaded file is not a valid Excel file. Content-Type: {content_type}")
+
         return pd.ExcelFile(BytesIO(response.content), engine="openpyxl")
     else:
-        raise ValueError("Failed to load Excel file from GitHub.")
+        raise ValueError(f"Failed to load Excel file from GitHub. Status Code: {response.status_code}")
 
 # Read relevant sheets
 def filter_data(excel_data, selected_aircraft):
@@ -67,6 +74,7 @@ def main():
                 st.warning("Please select at least one aircraft model.")
     except Exception as e:
         st.error(f"Error loading data: {str(e)}")
+        print("Error details:", str(e))  # Debugging output
 
 if __name__ == "__main__":
     main()
