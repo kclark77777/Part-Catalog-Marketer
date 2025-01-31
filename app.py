@@ -17,23 +17,28 @@ def filter_data(excel_data, selected_aircraft):
     
     return filtered_parts, filtered_mro
 
-# Generate a Word document
+from docx import Document
+
 def generate_document(selected_aircraft, parts, mro):
-    doc = Document()
-    doc.add_heading('Sales Collateral', 0)
-    doc.add_paragraph(f'Selected Aircraft: {", ".join(selected_aircraft)}')
+    # Load the existing template
+    doc = Document("template.docx")
     
-    doc.add_heading('Available Parts', level=1)
-    for _, row in parts.iterrows():
-        doc.add_paragraph(f"- {row['Part Number']}: {row['Description']}")
-    
-    doc.add_heading('MRO Capabilities', level=1)
-    for _, row in mro.iterrows():
-        doc.add_paragraph(f"- {row['Capability']} (Location: {row['Facility']})")
-    
-    file_path = 'Sales_Collateral.docx'
+    # Replace placeholders with actual data
+    for para in doc.paragraphs:
+        if "{{aircraft_models}}" in para.text:
+            para.text = para.text.replace("{{aircraft_models}}", ", ".join(selected_aircraft))
+        elif "{{parts_list}}" in para.text:
+            parts_text = "\n".join([f"- {row['Part Number']}: {row['Description']}" for _, row in parts.iterrows()])
+            para.text = para.text.replace("{{parts_list}}", parts_text)
+        elif "{{mro_list}}" in para.text:
+            mro_text = "\n".join([f"- {row['Capability']} (Location: {row['Facility']})" for _, row in mro.iterrows()])
+            para.text = para.text.replace("{{mro_list}}", mro_text)
+
+    # Save the output document
+    file_path = "Sales_Collateral.docx"
     doc.save(file_path)
     return file_path
+
 
 # Streamlit Web App
 def main():
