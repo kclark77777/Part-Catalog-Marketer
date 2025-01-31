@@ -7,7 +7,7 @@ from docx import Document
 
 # Load Excel file from GitHub
 def load_data():
-    url = "https://view.officeapps.live.com/op/view.aspx?src=https%3A%2F%2Fraw.githubusercontent.com%2Fkclark77777%2FPart-Catalog-Marketer%2Frefs%2Fheads%2Fmain%2FCapes%2520file.xlsx&wdOrigin=BROWSELINK"
+    url = "https://view.officeapps.live.com/op/view.aspx?src=https%3A%2F%2Fraw.githubusercontent.com%2Fkclark77777%2FPart-Catalog-Marketer%2Frefs%2Fheads%2Fmain%2Faircraft_parts.xlsx&wdOrigin=BROWSELINK"
     response = requests.get(url)
     if response.status_code == 200:
         return pd.ExcelFile(BytesIO(response.content), engine="openpyxl")
